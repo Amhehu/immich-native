@@ -1,5 +1,12 @@
 # Native Immich
 
+This repository is a fork of Native Immich.
+I added a script which autmatically do all needed steps to get a running instance of immich without docker.
+You have to copy full-install.sh and execute it. At the end you will have a running instance which listen to 0.0.0.0:2283
+I tested it on a fresh Proxmox LXC container with Debian 12.
+
+### Original README Text
+
 This repository provides instructions and helper scripts to install [Immich](https://github.com/immich-app/immich) without Docker, natively.
 
 ### Notes
