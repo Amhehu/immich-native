@@ -45,9 +45,9 @@ apt update
 apt install -y ffmpeg
 
 # immick user
+mkdir -p /var/lib/immich/home
 adduser --home /var/lib/immich/home --shell=/sbin/nologin --no-create-home --disabled-password --disabled-login --gecos "" immich
-mkdir -p /var/lib/immich
-chown immich:immich /var/lib/immich
+chown -R immich:immich /var/lib/immich
 chmod 700 /var/lib/immich
 
 # immick native
