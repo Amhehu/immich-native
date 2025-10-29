@@ -10,9 +10,10 @@ apt install -y --no-install-recommends python3-venv python3-dev uuid-runtime aut
 cd /tmp/
 
 # nodejs
-curl -fsSL https://deb.nodesource.com/setup_23.x -o nodesource_setup.sh
+curl -fsSL https://deb.nodesource.com/setup_24.x -o nodesource_setup.sh
 sudo -E bash nodesource_setup.sh
 apt install -y nodejs
+npm i pnpm --global
 
 # redis
 curl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -24,18 +25,27 @@ apt install -y redis-server
 
 # postgresql
 YES="yes" /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
-apt install -y postgresql postgresql-17-pgvector
+apt install -y postgresql postgresql-18-pgvector
 
 PGPASSWORD=$(openssl rand -base64 16)
 echo "Generiertes Passwort für User 'immich': $PGPASSWORD"
+
+wget https://github.com/tensorchord/VectorChord/releases/download/0.5.3/postgresql-18-vchord_0.5.3-1_$(dpkg --print-architecture).deb
+sudo apt install ./postgresql-18-vchord_0.5.3-1_$(dpkg --print-architecture).deb
+
+sed -i "s/#shared_preload_libraries = ''/shared_preload_libraries = 'vchord'/g" /etc/postgresql/18/main/postgresql.conf
+systemctl restart postgresql.service
 
 sudo -u postgres psql <<EOF
 CREATE DATABASE immich;
 CREATE USER immich WITH ENCRYPTED PASSWORD '$PGPASSWORD';
 GRANT ALL PRIVILEGES ON DATABASE immich TO immich;
 ALTER USER immich WITH SUPERUSER;
-\c immich
+EOF
+
+sudo -u postgres psql -d immich <<EOF
 CREATE EXTENSION IF NOT EXISTS vector;
+CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
 EOF
 
 # ffmpeg
