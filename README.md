@@ -3,7 +3,8 @@
 This repository is a fork of Native Immich.
 I added a script which autmatically do all needed steps to get a running instance of immich without docker.
 You have to copy full-install.sh and execute it. At the end you will have a running instance which listen to 0.0.0.0:2283
-I tested it on a fresh Proxmox LXC container with Debian 12.
+
+I tested current stable version 2.4.1 on a fresh Proxmox LXC container with Debian 13. My only problem was that /tmp directory was to small. I did an "umount /tmp", after it works fine.
 
 ### Original README Text
 

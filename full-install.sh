@@ -14,6 +14,7 @@ curl -fsSL https://deb.nodesource.com/setup_24.x -o nodesource_setup.sh
 sudo -E bash nodesource_setup.sh
 apt install -y nodejs
 npm i pnpm --global
+export NODE_OPTIONS="--max-old-space-size=4096"
 
 # redis
 curl -fsSL https://packages.redis.io/gpg | gpg --dearmor -o /usr/share/keyrings/redis-archive-keyring.gpg
@@ -55,10 +56,10 @@ apt update
 apt install -y ffmpeg
 
 # immick user
+mkdir -p /var/lib/immich/home
 adduser --home /var/lib/immich/home --shell=/sbin/nologin --no-create-home --disabled-password --disabled-login --gecos "" immich
-mkdir -p /var/lib/immich
-chown immich:immich /var/lib/immich
 chmod 700 /var/lib/immich
+chown immich:immich /var/lib/immich
 
 # immick native
 git clone https://github.com/arter97/immich-native
@@ -69,6 +70,7 @@ sed -i "s/YOUR_STRONG_RANDOM_PW/${PGPASSWORD}/g" /var/lib/immich/env
 sed -i "s/IMMICH_HOST=127.0.0.1/IMMICH_HOST=0.0.0.0/g" /var/lib/immich/env
 
 cd immich-native
+sed -i "s/\npnpm run build/\nNODE_OPTIONS="--max-old-space-size=4096" pnpm run build/g" install.sh
 ./install.sh
 
 systemctl daemon-reload
